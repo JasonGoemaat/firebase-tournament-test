@@ -1,0 +1,35 @@
+rules_version = '2';
+
+// see: https://firebase.google.com/docs/firestore/security/rules-conditions
+// wow, this is much handier: https://fireship.io/snippets/firestore-rules-recipes/
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // admin, I can do anything I want!
+    match /{document=**} {
+      allow read, write: if request.auth.uid == 'zt51B844H3W90zF4FBOb7K6fQGw2';
+    }
+    
+    // /users is special, any user can access their own documents
+    match /users/{userId} {
+      allow create, read, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Each user has 'public' area where they can update and delete, but anyone can read
+    match /users/{userId}/public {
+      allow read: if request.auth != null;
+    }
+
+    // things can be written by user
+    match /things/{docId} {
+      allow write: if request.auth.uid == request.resource.data.uid;
+      allow read: if request.auth.uid == resource.data.uid;
+      allow update: if request.auth.uid == resource.data.uid && request.auth.uid == request.resource.data.uid;
+      allow delete: if request.auth.uid == resource.data.uid;
+    }
+  }
+}

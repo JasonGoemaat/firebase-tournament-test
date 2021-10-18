@@ -1,0 +1,20 @@
+<p>tournament-view works!</p>
+
+<div *ngIf="config != null" class="container">
+  <div 
+    *ngFor="let spot of config.spots; let i = index"
+    [style.grid-area]="spot.gridArea"
+    [style.border-bottom]="getBorderBottom(spot)"
+    [style.border-right]="getBorderRight(spot)"
+    [hidden]="spot.hidden"
+  >
+    <span>Spot {{i}}
+      <ng-container *ngIf="spot.seed != undefined">S{{spot.seed}} </ng-container>
+      <ng-container *ngIf="spot.winnerOfGame != undefined">W{{spot.winnerOfGame}} </ng-container>
+      <ng-container *ngIf="spot.loserOfGame != undefined">L{{spot.loserOfGame}} </ng-container>
+      <ng-container *ngIf="spot.place != undefined">P{{spot.place}} </ng-container>
+      <ng-container *ngIf="spot.copySpot != undefined">C{{spot.copySpot}} </ng-container>
+      <ng-container *ngIf="getGameString(i) != undefined">{{getGameString(i)}} </ng-container>
+    </span>
+  </div>
+</div>
