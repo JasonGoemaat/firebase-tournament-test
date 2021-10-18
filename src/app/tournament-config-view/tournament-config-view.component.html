@@ -17,4 +17,8 @@
       <ng-container *ngIf="getGameString(i) != undefined">{{getGameString(i)}} </ng-container>
     </span>
   </div>
+
+  <div *ngFor="let text of config.texts; let i = index" [style.grid-area]="text.gridArea" style="border: 0; text-align: center; font-weight: bold; font-style: italic;">
+    {{text.text}}
+  </div>
 </div>

@@ -1,5 +1,5 @@
 export enum BorderConfig {
-  NoBorders = 0,
+  None = 0,
   Bottom,
   BottomRight,
   DashedBottom,
@@ -28,7 +28,8 @@ export interface TournamentGameConfig {
 
 export interface TournamentTextConfig {
   gridArea: string;
-  borders: BorderConfig;
+  text: string;
+  borders?: BorderConfig;
 }
 
 export interface TournamentConfig {
@@ -156,7 +157,12 @@ const createDefaultConfig = () : TournamentConfig => {
       {gridArea: '90/17/span 2/span 2', borders: BorderConfig.DashedBottom, place: 8},
 
     ],
-    texts: [],
+    texts: [
+      {gridArea: '35/1/span 2/span 2', text: '13th-16th'},
+      {gridArea: '35/3/span 2/span 2', text: '9th-12th'},
+      {gridArea: '35/5/span 2/span 2', text: '7th-8th'},
+      {gridArea: '35/7/span 2/span 2', text: '5th-6th'},
+    ],
     games: [
       // winner bracket round 1 (games 0-7)
       { spotA: 0, spotB: 1, winnerTo: 24, loserTo: 16, name: 'WA' },

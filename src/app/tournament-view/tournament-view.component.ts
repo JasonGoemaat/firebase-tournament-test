@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Data } from '@angular/router';
 import { data } from '../models/tournament';
 import { TournamentConfig, BorderConfig, TournamentSpotConfig } from '../models/tournament-config';
 

@@ -12,7 +12,7 @@ export interface Tournament {
   name: string | undefined;
   participants: Participant[];
   isPublic: boolean;
-  scheduleMinutes: number
+  scheduleMinutes: number;
 }
 
 export interface TournamentGame {
@@ -25,9 +25,9 @@ export interface TournamentGame {
 
 export interface TournamentSpot {
   playerId?: number;
-  playerName?: string;
   isWinner?: boolean;
   isLoser?: boolean;
+  isBye?: boolean;
   displayTime?: string;
   displayName?: string;
   className?: string;
