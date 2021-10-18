@@ -1,17 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Data } from '@angular/router';
-import { data } from '../models/tournament';
-import { TournamentConfig, BorderConfig, TournamentSpotConfig } from '../models/tournament-config';
+import { BorderConfig, TournamentConfig, TournamentSpotConfig } from '../models/tournament-config';
 
 @Component({
-  selector: 'app-tournament-view',
-  templateUrl: './tournament-view.component.html',
-  styleUrls: ['./tournament-view.component.scss']
+  selector: 'app-tournament-config-view',
+  templateUrl: './tournament-config-view.component.html',
+  styleUrls: ['./tournament-config-view.component.scss']
 })
-export class TournamentViewComponent implements OnInit {
+export class TournamentConfigViewComponent implements OnInit {
   @Input() config: TournamentConfig | null = null;
   BorderConfig = BorderConfig;
-  data = data;
 
   constructor() { }
 
@@ -52,20 +49,5 @@ export class TournamentViewComponent implements OnInit {
       }
     }
     return null;
-  }
-
-  getSpotDisplayInfo(spot: TournamentSpotConfig) {
-    // need 'isWinner' or 'isLoser' to add class to element
-    // need displayText (name (i.e. 'Jeff Livingston'), time (i.e. '9:00 am'), source (i.e. loser of WA'))
-    // need isItalic (if not name like 'Jeff Livingston' (i.e. for time or source, or place ))
-    // hintText (if is where winner goes, display game name)
-
-    const infos: any[] = [];
-
-    if (this.config != null) {
-      this.config.spots.forEach((spot, spotIndex) => {
-        // 
-      })
-    }
   }
 }

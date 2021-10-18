@@ -7,6 +7,8 @@ import { TournamentTestComponent } from './tournament-test/tournament-test.compo
 
 import { initializeApp } from "firebase/app";
 import { TournamentViewComponent } from './tournament-view/tournament-view.component';
+import { TournamentConfigViewComponent } from './tournament-config-view/tournament-config-view.component';
+import { TournamentSpotComponent } from './tournament-spot/tournament-spot.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDyEMGADaBOQW1F36QtoPFYDGJzdFETvrs",
@@ -23,7 +25,9 @@ initializeApp( firebaseConfig );
   declarations: [
     AppComponent,
     TournamentTestComponent,
-    TournamentViewComponent
+    TournamentViewComponent,
+    TournamentConfigViewComponent,
+    TournamentSpotComponent
   ],
   imports: [
     BrowserModule,
