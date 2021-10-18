@@ -1,12 +1,31 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { collection, doc, getFirestore, onSnapshot, setDoc } from '@firebase/firestore';
+import { doc, getFirestore, onSnapshot, setDoc } from '@firebase/firestore';
 import { deleteDoc } from 'firebase/firestore';
 import { Observable, Observer, ReplaySubject } from 'rxjs';
-import { delay, first } from 'rxjs/operators';
-import { Tournament } from './models/tournament';
+import { delay, first, timestamp } from 'rxjs/operators';
+import { TimeSlot, Tournament } from './models/tournament';
 import { AuthInfo, FirebaseUtilService } from './shared/firebase-util.service';
 
 import { defaultConfig } from './models/tournament-config'
+
+const participantsBySeed = [
+  'Jeff Livingston',
+  'Craig Tassin',
+  'Jason Goemaat',
+  'Brent Kolk',
+  'Chris Goldenstein',
+  'Ryan Moorhead',
+  'Kade Rosa',
+  'Jack Rosa',
+  'Danny Martin',
+  'Tim Martin',
+  'Doug',
+  'Bill Polka',
+  'www',
+  'xxx',
+  'yyy',
+  'zzz'
+]
 
 @Component({
   selector: 'app-root',
@@ -56,7 +75,12 @@ export class AppComponent implements OnInit, OnDestroy {
         participants: [],
         name: `Jack's 2021 8 Ball Invitational`,
         scheduleMinutes: 30,
+        timeSlots: []
       }
+
+      const utc = Date.UTC(2021, 9, 29, 14); // 10/30/2021 at 09:00 am CST
+
+
       const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
       console.log('added tournament with setDoc:');
       console.log(result);
@@ -75,18 +99,69 @@ export class AppComponent implements OnInit, OnDestroy {
   addParticipant() {
     this.authInfo$.pipe(first()).subscribe(async (auth) => {
       this.tournament$.pipe(first()).subscribe(async (tournament) => {
+        if (tournament.participants.length < participantsBySeed.length) {
+          const db = getFirestore();
+
+          tournament.participants?.push({
+            name: participantsBySeed[tournament.participants.length],
+            id: tournament.participants.length + 1,
+            seed: tournament.participants.length + 1,
+            uid: '',
+          })
+          const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
+          console.log('added participant with setDoc:');
+          console.log(result);
+        }
+      })
+    });
+  }
+
+  scheduleTimes() {
+    // I imagine adding these with some ui, date picker to pick start time and
+    // slider to pick how many from remaining games.  Can move game ids around
+    // and entire array will be re-arranged accordingly and written as one object.
+    // for now we use hard-coded start time and create a slot for every game.
+    // In the future we might add a table or have separate time slots for tables,
+    // then we have to make sure according to the schedule that every game has
+    // doesn't start until games have finished to provide participants.
+    const config = defaultConfig;
+    let utc = Date.UTC(2021, 9, 29, 14); // 09:00 am CST on 10/23/2021
+    this.authInfo$.pipe(first()).subscribe(async (auth) => {
+      this.tournament$.pipe(first()).subscribe(async (tournament) => {
+        const slots: TimeSlot[] = [];
+        const ms = tournament.scheduleMinutes * 60 * 1000;
+        config.games.forEach((game, index) => {
+          slots.push({ utc, gameId: index });
+          utc += tournament.scheduleMinutes * 30 * 60 * 1000;
+        });
+
+        const moveGame = (slots: TimeSlot[], gameId: number, newIndex: number) => {
+          let pos = slots.findIndex(slot => slot.gameId == gameId);
+          if (pos >= 0) {
+            while (pos > newIndex) {
+              slots[pos].gameId = slots[pos - 1].gameId;
+              pos--;
+            }
+            while (pos < newIndex) {
+              slots[pos].gameId = slots[pos + 1].gameId;
+              pos++;
+            }
+            slots[pos].gameId = gameId;
+          }
+        }
+
+        // move 2nd round winner up in time
+        moveGame(slots, 12, 8);
+        moveGame(slots, 13, 9);
+        moveGame(slots, 14, 10);
+        moveGame(slots, 15, 11);
+
+        tournament.timeSlots = slots;
         const db = getFirestore();
-        tournament.participants?.push({
-          name: 'Jason Goemaat',
-          key: '',
-          uid: '',
-          preferredName: 'Jason',
-          seed: 0
-        })
         const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
-        console.log('added participant with setDoc:');
+        console.log('added timeSlots with setDoc:');
         console.log(result);
       })
-    })
+    });
   }
 }

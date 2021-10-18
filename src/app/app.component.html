@@ -28,6 +28,8 @@
 <button (click)="addTournament()">Add Tournament</button>
 <button (click)="deleteTournament()">Delete Tournament</button>
 <button (click)="addParticipant()">Add Participant</button>
+<button (click)="scheduleTimes()">Schedule Times</button>
+
 
 <h2>Tournament:</h2>
 <pre *ngIf="tournament$ | async as tournament; else noTournament">{{tournament | json }}</pre>
