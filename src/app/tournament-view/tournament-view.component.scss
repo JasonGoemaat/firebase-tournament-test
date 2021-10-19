@@ -3,6 +3,7 @@
 h1 { text-align: center; }
 
 .container {
+  cursor: pointer;
   font-size: small;
   display: grid;
   /* columns are 3 wide for winner, 2 for loser */

@@ -21,9 +21,10 @@ export interface Tournament {
 export interface TournamentGame {
   winnerId?: number;
   loserId?: number;
-  startTime: number;
-  endTime: number;
-  enterTime: number;
+  games?: [];
+  startTime?: number;
+  endTime?: number;
+  enterTime?: number;
 }
 
 export interface TournamentSpot {
