@@ -40,6 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
   tournament$ = new ReplaySubject<Tournament>(1);
   tournamentViewModel$ = new ReplaySubject<TournamentViewModel>(1);
   config = defaultConfig;
+  open = { one: false, auth: false, commands: true, json: false, config: false, view: true };
 
   constructor(public fu: FirebaseUtilService) {
     (window as any).capp = this;
@@ -176,8 +177,8 @@ export class AppComponent implements OnInit, OnDestroy {
         // 24-25 are 4th round loser, already in order
 
         // 26-28 are playoffs for 7th-8th and 5th-6th, then 4th
-        moveGame(slots, 31, 26) // LM
-        moveGame(slots, 32, 27) // LN
+        moveGame(slots, 32, 26) // LM
+        moveGame(slots, 31, 27) // LN
         moveGame(slots, 27, 28) // LO
 
         // WO

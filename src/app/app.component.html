@@ -13,39 +13,94 @@
 </div>
  -->
 
- <h2>authInfo:</h2>
-
-<pre>{{ authInfo$ | async | json }}</pre>
-
-<h2>authInfo$ (delayed)</h2>
-
-<div *ngIf="authInfo$ | async as auth; else loading">
-  <pre>{{ auth | json }}</pre>
-  <button *ngIf="auth.uid; else notSignedIn" (click)="signOut()">Sign Out</button>
-  <ng-template #notSignedIn>
-    <button (click)="signIn()">Sign In</button>
+<!--------------------------------------------------------------------------------
+  Authentication
+---------------------------------------------------------------------------------->
+<mat-expansion-panel (opened)="open.auth = true" (closed)="open.auth = false">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      AuthInfo$
+    </mat-panel-title>
+    <mat-panel-description>
+      Firebase authenticiation information (async)
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <div *ngIf="authInfo$ | async as auth; else loading">
+    <pre>{{ auth | json }}</pre>
+    <button *ngIf="auth.uid; else notSignedIn" (click)="signOut()">Sign Out</button>
+    <ng-template #notSignedIn>
+      <button (click)="signIn()">Sign In</button>
+    </ng-template>
+  </div>
+  <ng-template #loading>
+    Loading...
   </ng-template>
-</div>
-<ng-template #loading>
-  Loading...
-</ng-template>
+</mat-expansion-panel>
 
-<button (click)="addTournament()">Add Tournament</button>
-<button (click)="deleteTournament()">Delete Tournament</button>
-<button (click)="addParticipant()">Add Participant</button>
-<button (click)="scheduleTimes()">Schedule Times</button>
-<button (click)="seedTournament()">Seed Tournament</button>
-<button (click)="completeAGame()">Complete a Game</button>
+<!-- open = { one: false, auth: false, commands: true, config: false, view: true }; -->
 
+<!--------------------------------------------------------------------------------
+  Commands
+---------------------------------------------------------------------------------->
+<mat-expansion-panel expanded="true" (opened)="open.commands = true" (closed)="open.commands = false">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Tournament Commands
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <button mat-raised-button color="primary" (click)="addTournament()">Add Tournament</button>
+  <button mat-raised-button color="primary" (click)="deleteTournament()">Delete Tournament</button>
+  <button mat-raised-button color="primary" (click)="addParticipant()">Add Participant</button>
+  <button mat-raised-button color="primary" (click)="scheduleTimes()">Schedule Times</button>
+  <button mat-raised-button color="primary" (click)="seedTournament()">Seed Tournament</button>
+  <button mat-raised-button color="primary" (click)="completeAGame()">Complete a Game</button>
+</mat-expansion-panel>
+
+
+<!--------------------------------------------------------------------------------
+  Tournament as JSON
+---------------------------------------------------------------------------------->
+<mat-expansion-panel (opened)="open.json = true" (closed)="open.json = false">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Tournament JSON
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <pre *ngIf="tournament$ | async as tournament; else noTournament">{{tournament | json }}</pre>
+  <ng-template #noTournament>
+    <em>No Tournament</em>
+  </ng-template>
+</mat-expansion-panel>
+
+<!--------------------------------------------------------------------------------
+  Tournament Config Grid
+---------------------------------------------------------------------------------->
+<mat-expansion-panel (opened)="open.config = true" (closed)="open.config = false">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Tournament Configuration Grid
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <app-tournament-config-view [config]="config"></app-tournament-config-view>
+</mat-expansion-panel>
+
+<!--------------------------------------------------------------------------------
+  Tournament Grid
+---------------------------------------------------------------------------------->
+<mat-expansion-panel (opened)="open.view = true" (closed)="open.view = false">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Tournament View
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <app-tournament-view *ngIf="tournament$ | async as tournament" [config]="config" [tournament]="tournament">
+  </app-tournament-view>
+</mat-expansion-panel>
 
 <h2>Tournament:</h2>
-<pre *ngIf="tournament$ | async as tournament; else noTournament">{{tournament | json }}</pre>
-<ng-template #noTournament>
-  <em>No Tournament</em>
-</ng-template>
 
 <h2>Tournament View:</h2>
-<app-tournament-view *ngIf="tournament$ | async as tournament" [config]="config" [tournament]="tournament"></app-tournament-view>
+<app-tournament-view *ngIf="tournament$ | async as tournament" [config]="config" [tournament]="tournament">
+</app-tournament-view>
 
 <h2>Tournament Config View:</h2>
-<app-tournament-config-view [config]="config"></app-tournament-config-view>

@@ -1,6 +1,6 @@
 <p>tournament-view works!</p>
 
-<div class="container" *ngIf="vm != null && vm.spots != null">
+<div class="container" *ngIf="vm != null && vm.spots != null && vm.config != null">
   <div 
     *ngFor="let spot of vm.spots; let i = index"
     [style.grid-area]="spot.config.gridArea"
@@ -10,5 +10,9 @@
   >
     <div class="name">{{spot.text}}</div>
     <div class="text">{{spot.gameName}}</div>
+  </div>
+
+  <div *ngFor="let text of vm.config.texts; let i = index" [style.grid-area]="text.gridArea" style="border: 0; text-align: center; font-weight: bold; font-style: italic;">
+    {{text.text}}
   </div>
 </div>

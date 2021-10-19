@@ -221,10 +221,10 @@ const createDefaultConfig = () : TournamentConfig => {
       { spotA: 60, spotB: 61, winnerTo: 62, loserTo: 64, name: 'LQ' },
 
       // playoff to determine 5th and 6th
-      { spotA: 67, spotB: 68, winnerTo: 69, loserTo: 70, name: 'LM' },
+      { spotA: 67, spotB: 68, winnerTo: 69, loserTo: 70, name: 'LN' },
 
       // playoff to determine 7th and 8th
-      { spotA: 71, spotB: 72, winnerTo: 73, loserTo: 74, name: 'LN' },
+      { spotA: 71, spotB: 72, winnerTo: 73, loserTo: 74, name: 'LM' },
     ]
   };
 
