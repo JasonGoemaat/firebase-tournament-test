@@ -5,6 +5,8 @@ export interface Participant {
   uid: string | null;
 }
 
+export type ParticipanMap = Record<number, number>
+
 export interface Tournament {
   ownerUid: string | undefined;
   ownerName: string | undefined;
@@ -13,6 +15,7 @@ export interface Tournament {
   isPublic: boolean;
   scheduleMinutes: number;
   timeSlots: TimeSlot[];
+  participantMap: ParticipanMap;
 }
 
 export interface TournamentGame {

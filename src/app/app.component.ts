@@ -3,28 +3,28 @@ import { doc, getFirestore, onSnapshot, setDoc } from '@firebase/firestore';
 import { deleteDoc } from 'firebase/firestore';
 import { Observable, Observer, ReplaySubject } from 'rxjs';
 import { delay, first, timestamp } from 'rxjs/operators';
-import { TimeSlot, Tournament } from './models/tournament';
+import { ParticipanMap, TimeSlot, Tournament } from './models/tournament';
 import { AuthInfo, FirebaseUtilService } from './shared/firebase-util.service';
 
 import { defaultConfig } from './models/tournament-config'
 
 const participantsBySeed = [
-  'Jeff Livingston',
-  'Craig Tassin',
-  'Jason Goemaat',
-  'Brent Kolk',
-  'Chris Goldenstein',
-  'Ryan Moorhead',
-  'Kade Rosa',
-  'Jack Rosa',
-  'Danny Martin',
-  'Tim Martin',
-  'Doug',
-  'Bill Polka',
-  'www',
-  'xxx',
-  'yyy',
-  'zzz'
+  'Jeff Livingston', // 1
+  'Craig Tassin', // 2
+  'Tim Martin', // 3
+  'Chris Goldenstein', // 4
+  'Danny Martin', // 5
+  'Bill Polka', // 6
+  'Ryan Moorhead', // 7
+  'Brent Kolk', // 8
+  'Jason Goemaat', // 9
+  'Ed Heritage', // 10
+  'DJ Weber', // 11
+  'Jack Rosa', // 12
+  'Doug Liebe', // 13
+  'Kurt Berry', // 14
+  'Unknown', // 15
+  'Kade Rosa', // 16
 ]
 
 @Component({
@@ -61,6 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const unsub = onSnapshot(doc(db, "tournaments", "mine"), (doc) => {
       console.log('got doc!', doc.data());
       this.tournament$.next(doc.data() as Tournament);
+      (window as any).tournament = doc.data();
     });
     this.unsubs.push(unsub);
   }
@@ -73,13 +74,13 @@ export class AppComponent implements OnInit, OnDestroy {
         ownerName: auth.name as string,
         ownerUid: auth.uid as string,
         participants: [],
-        name: `Jack's 2021 8 Ball Invitational`,
+        name: `13th Annual Tournament Of The Rosa's`,
         scheduleMinutes: 30,
-        timeSlots: []
+        timeSlots: [],
+        participantMap: {},
       }
 
       const utc = Date.UTC(2021, 9, 29, 14); // 10/30/2021 at 09:00 am CST
-
 
       const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
       console.log('added tournament with setDoc:');
@@ -125,14 +126,14 @@ export class AppComponent implements OnInit, OnDestroy {
     // then we have to make sure according to the schedule that every game has
     // doesn't start until games have finished to provide participants.
     const config = defaultConfig;
-    let utc = Date.UTC(2021, 9, 29, 14); // 09:00 am CST on 10/23/2021
+    let utc = Date.UTC(2021, 9, 30, 14); // 09:00 am CST on 10/30/2021
     this.authInfo$.pipe(first()).subscribe(async (auth) => {
       this.tournament$.pipe(first()).subscribe(async (tournament) => {
         const slots: TimeSlot[] = [];
         const ms = tournament.scheduleMinutes * 60 * 1000;
         config.games.forEach((game, index) => {
           slots.push({ utc, gameId: index });
-          utc += tournament.scheduleMinutes * 30 * 60 * 1000;
+          utc += ms;
         });
 
         const moveGame = (slots: TimeSlot[], gameId: number, newIndex: number) => {
@@ -163,5 +164,41 @@ export class AppComponent implements OnInit, OnDestroy {
         console.log(result);
       })
     });
+  }
+
+  /**
+   * Participants should be added, this will seed them according to config
+   */
+  seedTournament() {
+    this.authInfo$.pipe(first()).subscribe(async (auth) => {
+      this.tournament$.pipe(first()).subscribe(async (tournament) => {
+        let participantMap: ParticipanMap = {};
+        const config = defaultConfig;
+        config.spots.forEach((spot, spotIndex) => {
+          if (typeof(spot.seed) === 'number') {
+            console.log(spotIndex, spot);
+            participantMap[spotIndex] = tournament.participants.find(participant => participant.seed === spot.seed)?.id as number;
+          }
+        });
+
+        tournament.participantMap = participantMap;
+        const db = getFirestore();
+        const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
+        console.log('added participantMap with setDoc:');
+        console.log(result);
+      });
+    });
+  }
+
+  completeAGame() {
+
+  }
+
+  signIn() {
+    this.fu.signIn();
+  }
+
+  signOut() {
+    this.fu.signOut();
   }
 }

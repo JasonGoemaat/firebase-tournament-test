@@ -1,18 +1,19 @@
-<h1>app.component</h1>
+<!-- <h1>app.component</h1>
 
 <ng-container *ngIf="true else not">
   True
 </ng-container>
 <ng-template #not>
   Waiting for auth to resolve...
-</ng-template>
+</ng-template> -->
 
-<h2>Time:</h2>
+<!-- <h2>Time:</h2>
 <div>
   <code>observable|async</code>:  Time: {{ time$ | async }}
 </div>
+ -->
 
-<h2>authInfo:</h2>
+ <h2>authInfo:</h2>
 
 <pre>{{ authInfo$ | async | json }}</pre>
 
@@ -20,6 +21,10 @@
 
 <div *ngIf="authInfo$ | async as auth; else loading">
   <pre>{{ auth | json }}</pre>
+  <button *ngIf="auth.uid; else notSignedIn" (click)="signOut()">Sign Out</button>
+  <ng-template #notSignedIn>
+    <button (click)="signIn()">Sign In</button>
+  </ng-template>
 </div>
 <ng-template #loading>
   Loading...
@@ -29,6 +34,8 @@
 <button (click)="deleteTournament()">Delete Tournament</button>
 <button (click)="addParticipant()">Add Participant</button>
 <button (click)="scheduleTimes()">Schedule Times</button>
+<button (click)="seedTournament()">Seed Tournament</button>
+<button (click)="completeAGame()">Complete a Game</button>
 
 
 <h2>Tournament:</h2>
