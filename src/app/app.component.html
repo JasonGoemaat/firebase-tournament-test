@@ -45,7 +45,7 @@
 </ng-template>
 
 <h2>Tournament View:</h2>
-<app-tournament-view [config]="config"></app-tournament-view>
+<app-tournament-view *ngIf="tournament$ | async as tournament" [config]="config" [tournament]="tournament"></app-tournament-view>
 
 <h2>Tournament Config View:</h2>
 <app-tournament-config-view [config]="config"></app-tournament-config-view>

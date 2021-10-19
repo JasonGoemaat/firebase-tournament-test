@@ -5,7 +5,7 @@ import { Observable, Observer, ReplaySubject } from 'rxjs';
 import { delay, first, timestamp } from 'rxjs/operators';
 import { ParticipanMap, TimeSlot, Tournament } from './models/tournament';
 import { AuthInfo, FirebaseUtilService } from './shared/firebase-util.service';
-
+import { TournamentViewModel } from './models/tournament-view-model';
 import { defaultConfig } from './models/tournament-config'
 
 const participantsBySeed = [
@@ -38,6 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
   time$: Observable<string>;
   unsubs: any[] = [];
   tournament$ = new ReplaySubject<Tournament>(1);
+  tournamentViewModel$ = new ReplaySubject<TournamentViewModel>(1);
   config = defaultConfig;
 
   constructor(public fu: FirebaseUtilService) {
@@ -60,8 +61,13 @@ export class AppComponent implements OnInit, OnDestroy {
     const db = getFirestore();
     const unsub = onSnapshot(doc(db, "tournaments", "mine"), (doc) => {
       console.log('got doc!', doc.data());
-      this.tournament$.next(doc.data() as Tournament);
-      (window as any).tournament = doc.data();
+      const tournament = doc.data() as Tournament;
+      const tournamentViewModel = new TournamentViewModel(defaultConfig, tournament);
+
+      this.tournament$.next(tournament);
+      this.tournamentViewModel$.next(tournamentViewModel);
+      (window as any).tournament = tournament;
+      (window as any).tournamentViewModel = tournamentViewModel;
     });
     this.unsubs.push(unsub);
   }
@@ -151,17 +157,43 @@ export class AppComponent implements OnInit, OnDestroy {
           }
         }
 
-        // move 2nd round winner up in time
+        // 0-7 is 1st round winner
+
+        // 8-11 is 2nd round winner, move up in time
         moveGame(slots, 12, 8);
         moveGame(slots, 13, 9);
         moveGame(slots, 14, 10);
         moveGame(slots, 15, 11);
+
+        // 12-19 are 1st and 2nd round loser, already in order
+
+        // 20-21 are 3rd round loser, move up 2
+        moveGame(slots, 22, 20)
+        moveGame(slots, 23, 21)
+
+        // 22-23 are 3rd round winner, already in order
+        
+        // 24-25 are 4th round loser, already in order
+
+        // 26-28 are playoffs for 7th-8th and 5th-6th, then 4th
+        moveGame(slots, 31, 26) // LM
+        moveGame(slots, 32, 27) // LN
+        moveGame(slots, 27, 28) // LO
+
+        // WO
 
         tournament.timeSlots = slots;
         const db = getFirestore();
         const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
         console.log('added timeSlots with setDoc:');
         console.log(result);
+
+        console.log('%cSchedule:', 'padding: 5px; border-radius: 5px; background-color: #202080; color: white; padding-left: 200px; padding-right: 200px;');
+        tournament.timeSlots.forEach(x => {
+          const { gameId, utc } = x;
+          const game = config.games[gameId];
+          console.log(`${game.name} (${gameId})`, new Date(utc).toLocaleTimeString());
+        });
       })
     });
   }

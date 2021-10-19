@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { data } from '../models/tournament';
+import { Component, ComponentFactoryResolver, Input, OnInit } from '@angular/core';
+import { data, Tournament } from '../models/tournament';
 import { TournamentConfig, BorderConfig, TournamentSpotConfig } from '../models/tournament-config';
+import { TournamentViewModel } from '../models/tournament-view-model';
 
 @Component({
   selector: 'app-tournament-view',
@@ -9,12 +10,20 @@ import { TournamentConfig, BorderConfig, TournamentSpotConfig } from '../models/
 })
 export class TournamentViewComponent implements OnInit {
   @Input() config: TournamentConfig | null = null;
+  @Input() tournament: Tournament | null = null;
+  vm: TournamentViewModel | null = null;
   BorderConfig = BorderConfig;
   data = data;
 
   constructor() { }
 
   ngOnInit(): void {
+    console.log('TournamentViewComponent config:', this.config);
+    console.log('TournamentViewComponent tournament:', this.tournament);
+    if (this.config != null && this.tournament != null) {
+      this.vm = new TournamentViewModel(this.config, this.tournament);
+      console.log('vm:', this.vm);
+    }
   }
 
   getBorderBottom(spot: TournamentSpotConfig): string {

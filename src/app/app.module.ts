@@ -9,6 +9,8 @@ import { initializeApp } from "firebase/app";
 import { TournamentViewComponent } from './tournament-view/tournament-view.component';
 import { TournamentConfigViewComponent } from './tournament-config-view/tournament-config-view.component';
 import { TournamentSpotComponent } from './tournament-spot/tournament-spot.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppMaterialModule } from './app-material/app-material.module';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDyEMGADaBOQW1F36QtoPFYDGJzdFETvrs",
@@ -31,7 +33,9 @@ initializeApp( firebaseConfig );
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    AppMaterialModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
