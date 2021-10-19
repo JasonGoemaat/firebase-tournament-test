@@ -1,5 +1,4 @@
-<p>tournament-view works!</p>
-
+<h1 *ngIf="vm != null">{{vm?.tournament?.name}}</h1>
 <div class="container" *ngIf="vm != null && vm.spots != null && vm.config != null">
   <div 
     *ngFor="let spot of vm.spots; let i = index"

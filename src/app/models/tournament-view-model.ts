@@ -20,7 +20,7 @@ const getTimeString = (utc: number) => {
 export class TournamentViewModel {
     public spots: SpotViewModel[];
 
-    constructor(public config: TournamentConfig, tournament: Tournament) {
+    constructor(public config: TournamentConfig, public tournament: Tournament) {
         const spots = config.spots.map((spotConfig, index) => <SpotViewModel>{ text: `Spot ${index}`, config: spotConfig });
         this.spots = spots;
 
