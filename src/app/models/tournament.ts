@@ -19,10 +19,10 @@ export interface Tournament {
   timeSlots: TimeSlot[];
   participantMap: ParticipantMap; // index with spot, gives participant ID
   resultMap: ResultMap; // index with spot, tells you if they won (true), lost (false) or haven't played (undefined)
-  gameMap: GameMap;
+  gameResultMap: GameResultMap;
 }
 
-export interface Game {
+export interface GameResult {
   isFinished?: boolean;
   matchWinner?: number;
   matchLoser?: number;
@@ -34,7 +34,7 @@ export interface Game {
 }
 
 // Tournament.games is GameMap, game is only added when it is scored
-export type GameMap = Record<number, Game>
+export type GameResultMap = Record<number, GameResult>
 
 export interface TournamentSpot {
   playerId?: number;

@@ -10,7 +10,9 @@ import { TournamentViewComponent } from './tournament-view/tournament-view.compo
 import { TournamentConfigViewComponent } from './tournament-config-view/tournament-config-view.component';
 import { TournamentSpotComponent } from './tournament-spot/tournament-spot.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppMaterialModule } from './app-material/app-material.module';
+import { AppMaterialModule } from './app-material.module';
+import { SpotDialogComponent } from './spot-dialog/spot-dialog.component';
+import { FormsModule } from '@angular/forms';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDyEMGADaBOQW1F36QtoPFYDGJzdFETvrs",
@@ -29,12 +31,14 @@ initializeApp( firebaseConfig );
     TournamentTestComponent,
     TournamentViewComponent,
     TournamentConfigViewComponent,
-    TournamentSpotComponent
+    TournamentSpotComponent,
+    SpotDialogComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    FormsModule,
     AppMaterialModule,
   ],
   providers: [],

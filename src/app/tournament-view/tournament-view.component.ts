@@ -1,7 +1,10 @@
 import {Component,Input, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { data, Tournament } from '../models/tournament';
 import { TournamentConfig, BorderConfig, TournamentSpotConfig } from '../models/tournament-config';
-import { TournamentViewModel } from '../models/tournament-view-model';
+import { SpotViewModel, TournamentViewModel } from '../models/tournament-view-model';
+import { SpotDialogData } from '../spot-dialog/spot-dialog-data';
+import { SpotDialogComponent } from '../spot-dialog/spot-dialog.component';
 
 @Component({
   selector: 'app-tournament-view',
@@ -31,7 +34,9 @@ export class TournamentViewComponent implements OnInit {
   BorderConfig = BorderConfig;
   data = data;
 
-  constructor() { }
+  constructor(
+    public dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     console.log('TournamentViewComponent config:', this.config);
@@ -92,5 +97,16 @@ export class TournamentViewComponent implements OnInit {
         // 
       })
     }
+  }
+
+  onSpotClick(spot: SpotViewModel) {
+    console.log('click:', spot, this.vm);
+    const dialogRef = this.dialog.open(SpotDialogComponent, {
+      data: new SpotDialogData(this.vm as TournamentViewModel, spot)
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('SpotDialogComponent closed, result:', result);
+    });
   }
 }

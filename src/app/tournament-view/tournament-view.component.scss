@@ -33,6 +33,7 @@ h1 { text-align: center; }
       white-space: nowrap;
       text-overflow: clip;
       text-align: left;
+      user-select: none;
 
       &.winner {
         color: green;

@@ -87,7 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
         name: `13th Annual Tournament Of The Rosa's`,
         scheduleMinutes: 30,
         timeSlots: [],
-        gameMap: {},
+        gameResultMap: {},
         participantMap: {},
         resultMap: {},
       }
@@ -257,7 +257,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
         // remove resultMap and gameMap
         tournament.resultMap = {};
-        tournament.gameMap = {};
+        tournament.gameResultMap = {};
 
         const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
         console.log('resetGames()', result);

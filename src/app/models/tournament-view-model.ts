@@ -1,14 +1,15 @@
-import { Game, Participant, Tournament } from "./tournament";
+import { GameResult, Participant, Tournament } from "./tournament";
 import { TournamentConfig, TournamentSpotConfig } from "./tournament-config";
 
 export interface SpotViewModel {
-    isWinner?: boolean;
-    isLoser?: boolean;
-    isItalic?: boolean;
-    isBold?: boolean;
-    gameName?: string;
-    text: string;
-    config: TournamentSpotConfig;
+  index: number;
+  isWinner?: boolean;
+  isLoser?: boolean;
+  isItalic?: boolean;
+  isBold?: boolean;
+  gameName?: string;
+  text: string;
+  config: TournamentSpotConfig;
 }
 
 const rxTime = /([0-9]+:)([0-9]+):[0-9]+( AM| PM)/
@@ -22,7 +23,7 @@ export class TournamentViewModel {
     public spots: SpotViewModel[];
 
     constructor(public config: TournamentConfig, public tournament: Tournament) {
-        const spots = config.spots.map((spotConfig, index) => <SpotViewModel>{ text: `Spot ${index}`, config: spotConfig });
+        const spots = config.spots.map((spotConfig, index) => <SpotViewModel>{ text: `Spot ${index}`, config: spotConfig, index });
         this.spots = spots;
 
         // process games adding game name and time
@@ -79,7 +80,7 @@ export class TournamentViewModel {
      * To show upcoming games, list unplayed games in order by time slot
      */
     getGames(unplayedOnly = false) {
-      const timeSlots = this.tournament.timeSlots.filter(timeSlot => !unplayedOnly || this.tournament.gameMap[timeSlot.gameId] === undefined);
+      const timeSlots = this.tournament.timeSlots.filter(timeSlot => !unplayedOnly || this.tournament.gameResultMap[timeSlot.gameId] === undefined);
       const unknownParticipant: Participant = { name: 'UNKNOWN' };
       const games = timeSlots.map(timeSlot => {
         let result = {};
@@ -87,7 +88,7 @@ export class TournamentViewModel {
         let participantA = this.getParticipant(this.tournament.participantMap[gameConfig.spotA]) || unknownParticipant;
         let participantB = this.getParticipant(this.tournament.participantMap[gameConfig.spotB]) || unknownParticipant;
         return {
-          ...gameConfig, ...timeSlot, participantA, participantB, result: this.tournament.gameMap[timeSlot.gameId]
+          ...gameConfig, ...timeSlot, participantA, participantB, result: this.tournament.gameResultMap[timeSlot.gameId]
         }
       });
       return games;
@@ -107,7 +108,7 @@ export class TournamentViewModel {
         loser: this.tournament.participantMap[gameConfig.spotA],
       }
 
-      var gameResult: Game = {
+      var gameResult: GameResult = {
         isFinished: true,
         matchWinner: info.winner,
         matchLoser: info.loser,
@@ -118,7 +119,7 @@ export class TournamentViewModel {
         entryTime: Date.now()
       }
 
-      this.tournament.gameMap[gameId] = gameResult;
+      this.tournament.gameResultMap[gameId] = gameResult;
       this.tournament.resultMap[info.winnerSourceSpot] = true;
       this.tournament.resultMap[info.loserSourceSpot] = false;
       this.tournament.participantMap[gameConfig.winnerTo as number] = info.winner;
@@ -127,8 +128,12 @@ export class TournamentViewModel {
       console.log('gameConfig:', gameConfig);
       console.log('info:', info);
       console.log('resultMap:', this.tournament.resultMap);
-      console.log('gameMap:', this.tournament.gameMap);
+      console.log('gameResultMap:', this.tournament.gameResultMap);
       console.log('participantMap:', this.tournament.participantMap);
+    }
+
+    getGameResultForSpot(spotIndex: number) : GameResult | null {
+      return null;
     }
 }
 
