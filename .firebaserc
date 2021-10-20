@@ -1,5 +1,11 @@
 {
-  "projects": {
-    "default": "goemaat-multiple-apps"
+  "targets": {
+    "goemaat-multiple-apps": {
+      "hosting": {
+        "tournament": [
+          "goemaat-ma-tournament"
+        ]
+      }
+    }
   }
 }

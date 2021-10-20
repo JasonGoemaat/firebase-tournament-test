@@ -6,7 +6,8 @@
     "start": "ng serve --port 4300 --open",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "firebase deploy --only hosting:tournament --project goemaat-multiple-apps"
   },
   "private": true,
   "dependencies": {
