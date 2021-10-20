@@ -1,4 +1,4 @@
-import { Tournament } from "./tournament";
+import { Participant, Tournament } from "./tournament";
 import { TournamentConfig, TournamentSpotConfig } from "./tournament-config";
 
 export interface SpotViewModel {
@@ -55,5 +55,12 @@ export class TournamentViewModel {
                 spot.config = config.spots[spotIndex];
             }
         }
+    }
+
+    getParticipant(participantId: number) : Participant {
+      return this.tournament.participants.find(p => p.id === participantId) as Participant;
+    }
+
+    getUnplayedGames() {
     }
 }

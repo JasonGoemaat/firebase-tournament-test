@@ -3,10 +3,13 @@ import { doc, getFirestore, onSnapshot, setDoc } from '@firebase/firestore';
 import { deleteDoc } from 'firebase/firestore';
 import { Observable, Observer, ReplaySubject } from 'rxjs';
 import { delay, first, timestamp } from 'rxjs/operators';
-import { ParticipanMap, TimeSlot, Tournament } from './models/tournament';
+import { ParticipantMap, TimeSlot, Tournament } from './models/tournament';
 import { AuthInfo, FirebaseUtilService } from './shared/firebase-util.service';
 import { TournamentViewModel } from './models/tournament-view-model';
 import { defaultConfig } from './models/tournament-config'
+import * as moment from "moment";
+
+(window as any).moment = moment;
 
 const participantsBySeed = [
   'Jeff Livingston', // 1
@@ -84,6 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
         name: `13th Annual Tournament Of The Rosa's`,
         scheduleMinutes: 30,
         timeSlots: [],
+        gameMap: {},
         participantMap: {},
       }
 
@@ -205,7 +209,7 @@ export class AppComponent implements OnInit, OnDestroy {
   seedTournament() {
     this.authInfo$.pipe(first()).subscribe(async (auth) => {
       this.tournament$.pipe(first()).subscribe(async (tournament) => {
-        let participantMap: ParticipanMap = {};
+        let participantMap: ParticipantMap = {};
         const config = defaultConfig;
         config.spots.forEach((spot, spotIndex) => {
           if (typeof(spot.seed) === 'number') {

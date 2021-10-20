@@ -22,6 +22,7 @@ export class TournamentViewComponent implements OnInit {
     console.log('TournamentViewComponent tournament:', this.tournament);
     if (this.config != null && this.tournament != null) {
       this.vm = new TournamentViewModel(this.config, this.tournament);
+      (window as any).vm = this.vm;
       console.log('vm:', this.vm);
     }
   }
