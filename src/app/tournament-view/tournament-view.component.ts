@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, Input, OnInit } from '@angular/core';
+import {Component,Input, OnInit } from '@angular/core';
 import { data, Tournament } from '../models/tournament';
 import { TournamentConfig, BorderConfig, TournamentSpotConfig } from '../models/tournament-config';
 import { TournamentViewModel } from '../models/tournament-view-model';
@@ -9,8 +9,24 @@ import { TournamentViewModel } from '../models/tournament-view-model';
   styleUrls: ['./tournament-view.component.scss']
 })
 export class TournamentViewComponent implements OnInit {
-  @Input() config: TournamentConfig | null = null;
-  @Input() tournament: Tournament | null = null;
+  myConfig: TournamentConfig | null = null;
+  myTournament: Tournament | null = null;
+
+  @Input()
+  set config(config: TournamentConfig) {
+    this.myConfig = config;
+    if (this.config !== null && this.myTournament !== null) {
+      this.vm = new TournamentViewModel(this.myConfig, this.myTournament);
+    }
+  }
+
+  @Input()
+  set tournament(tournament: Tournament) {
+    this.myTournament = tournament;
+    if (this.myConfig !== null && this.myTournament !== null) {
+      this.vm = new TournamentViewModel(this.myConfig, this.myTournament);
+    }
+  }
   vm: TournamentViewModel | null = null;
   BorderConfig = BorderConfig;
   data = data;

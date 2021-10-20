@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { doc, getFirestore, onSnapshot, setDoc } from '@firebase/firestore';
 import { deleteDoc } from 'firebase/firestore';
 import { Observable, Observer, ReplaySubject } from 'rxjs';
@@ -45,7 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
   config = defaultConfig;
   open = { one: false, auth: false, commands: true, json: false, config: false, view: true };
 
-  constructor(public fu: FirebaseUtilService) {
+  constructor(public fu: FirebaseUtilService, readonly cd: ChangeDetectorRef) {
     (window as any).capp = this;
     this.authInfo$ = fu.auth.pipe(delay(1));
     this.time$ = new Observable<string>((observer: Observer<string>) => {
@@ -89,9 +89,8 @@ export class AppComponent implements OnInit, OnDestroy {
         timeSlots: [],
         gameMap: {},
         participantMap: {},
+        resultMap: {},
       }
-
-      const utc = Date.UTC(2021, 9, 29, 14); // 10/30/2021 at 09:00 am CST
 
       const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
       console.log('added tournament with setDoc:');
@@ -228,7 +227,42 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   completeAGame() {
+    this.authInfo$.pipe(first()).subscribe(async (auth) => {
+      this.tournament$.pipe(first()).subscribe(async (tournament) => {
+        const db = getFirestore();
 
+        const vm = new TournamentViewModel(this.config, tournament);
+        const [game] = vm.getGames(true);
+        const winnerId = Math.random() >= 0.5 ? game.participantA.id : game.participantB.id;
+        vm.declareWinner(game.gameId, winnerId as number);
+        const result = await setDoc(doc(db, "tournaments", "mine"), vm.tournament);
+        console.log(`set winner to ${winnerId}:`, game);
+        console.log(result);
+        this.cd.markForCheck();
+      })
+    });
+  }
+
+  resetGames() {
+    this.authInfo$.pipe(first()).subscribe(async (auth) => {
+      this.tournament$.pipe(first()).subscribe(async (tournament) => {
+        const db = getFirestore();
+        
+        // remove all but seeded participants
+        for(const k in tournament.participantMap) {
+          if(Number(k) > 15) {
+            delete tournament.participantMap[k]
+          }
+        }
+
+        // remove resultMap and gameMap
+        tournament.resultMap = {};
+        tournament.gameMap = {};
+
+        const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
+        console.log('resetGames()', result);
+      })
+    });
   }
 
   signIn() {

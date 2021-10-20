@@ -33,6 +33,22 @@ h1 { text-align: center; }
       white-space: nowrap;
       text-overflow: clip;
       text-align: left;
+
+      &.winner {
+        color: green;
+      }
+
+      &.loser {
+        color: red;
+      }
+
+      &.bold {
+        font-weight: bold;
+      }
+
+      &.italic {
+        font-style: italic;
+      }
     }
     
     > .text {

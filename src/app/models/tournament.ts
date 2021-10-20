@@ -1,11 +1,13 @@
 export interface Participant {
-  name: string;
-  id: number;
-  seed: number | undefined;
-  uid: string | null;
+  name?: string;
+  id?: number;
+  seed?: number;
+  uid?: string;
 }
 
 export type ParticipantMap = Record<number, number>
+
+export type ResultMap = Record<number, boolean>
 
 export interface Tournament {
   ownerUid: string | undefined;
@@ -15,17 +17,20 @@ export interface Tournament {
   isPublic: boolean;
   scheduleMinutes: number;
   timeSlots: TimeSlot[];
-  participantMap: ParticipantMap;
+  participantMap: ParticipantMap; // index with spot, gives participant ID
+  resultMap: ResultMap; // index with spot, tells you if they won (true), lost (false) or haven't played (undefined)
   gameMap: GameMap;
 }
 
 export interface Game {
+  isFinished?: boolean;
   matchWinner?: number;
   matchLoser?: number;
-  winners?: [];
+  lagWinner?: number, // who won the lag (if we want to track)
+  gameWinners?: number[]; // IDs for winner of each game played (if we want to track)
   startTime?: number;
   endTime?: number;
-  enterTime?: number;
+  entryTime?: number;
 }
 
 // Tournament.games is GameMap, game is only added when it is scored
