@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 4300 --open --disable-host-check",
-    "build": "ng build",
+    "start": "ng serve --port 4300 --open --disable-host-check --live-reload=false",
+    "build": "ng build --stats-json",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "deploy": "firebase deploy --only hosting:tournament --project goemaat-multiple-apps"
+    "deploy": "firebase deploy --only hosting:tournament --project goemaat-multiple-apps",
+    "bundle-report": "ng build --stats-json && webpack-bundle-analyzer dist/firebase-tournament-test/stats.json"
   },
   "private": true,
   "dependencies": {
@@ -25,6 +26,7 @@
     "moment": "^2.29.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
+    "webpack-bundle-analyzer": "^4.5.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
