@@ -10,6 +10,7 @@
     "deploy": "firebase deploy --only hosting:tournament --project goemaat-multiple-apps",
     "bundle-report": "ng build --stats-json && webpack-bundle-analyzer dist/firebase-tournament-test/stats.json"
   },
+  "license": "UNLICENSED",
   "private": true,
   "dependencies": {
     "@angular/animations": "~12.2.0",
