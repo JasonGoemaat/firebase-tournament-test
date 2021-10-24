@@ -20,6 +20,7 @@ export interface Tournament {
   participantMap: ParticipantMap; // index with spot, gives participant ID
   resultMap: ResultMap; // index with spot, tells you if they won (true), lost (false) or haven't played (undefined)
   gameResultMap: GameResultMap;
+  roles: Record<string, string>;
 }
 
 export interface GameResult {

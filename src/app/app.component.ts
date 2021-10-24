@@ -9,6 +9,8 @@ import { TournamentViewModel } from './models/tournament-view-model';
 import { defaultConfig } from './models/tournament-config'
 import * as moment from "moment";
 
+const tournamentId = "test";
+
 (window as any).moment = moment;
 
 const participantsBySeed = [
@@ -26,7 +28,7 @@ const participantsBySeed = [
   'Jack Rosa', // 12
   'Doug Liebe', // 13
   'Kurt Berry', // 14
-  'Unknown', // 15
+  'Kevin Troxel', // 15
   'Kade Rosa', // 16
 ]
 
@@ -63,7 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   watchTournament() {
     const db = getFirestore();
-    const unsub = onSnapshot(doc(db, "tournaments", "mine"), (doc) => {
+    const unsub = onSnapshot(doc(db, "tournaments", tournamentId), (doc) => {
       console.log('got doc!', doc.data());
       const tournament = doc.data() as Tournament;
       const tournamentViewModel = new TournamentViewModel(defaultConfig, tournament);
@@ -90,9 +92,15 @@ export class AppComponent implements OnInit, OnDestroy {
         gameResultMap: {},
         participantMap: {},
         resultMap: {},
+        roles: {
+          'XTdoxcR4AIb1VTDLwj9JcsdFo9k1': 'admin',
+          '0Smac4dSLPbOfIJUAzEEHnMqcuC3': 'admin',
+          '6EAejtfn2jZkvCitSjy4psHqBUu2': 'admin',
+          'zt51B844H3W90zF4FBOb7K6fQGw2': 'admin',
+        },
       }
 
-      const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
+      const result = await setDoc(doc(db, "tournaments", tournamentId), tournament);
       console.log('added tournament with setDoc:');
       console.log(result);
     })
@@ -101,7 +109,7 @@ export class AppComponent implements OnInit, OnDestroy {
   deleteTournament() {
     this.authInfo$.pipe(first()).subscribe(async (auth) => {
       const db = getFirestore();
-      const result = await deleteDoc(doc(db, "tournaments", "mine"));
+      const result = await deleteDoc(doc(db, "tournaments", tournamentId));
       console.log('deleted tournament with deleteDoc:');
       console.log(result);
     })
@@ -119,7 +127,7 @@ export class AppComponent implements OnInit, OnDestroy {
             seed: tournament.participants.length + 1,
             uid: '',
           })
-          const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
+          const result = await setDoc(doc(db, "tournaments", tournamentId), tournament);
           console.log('added participant with setDoc:');
           console.log(result);
         }
@@ -172,23 +180,25 @@ export class AppComponent implements OnInit, OnDestroy {
         // 12-19 are 1st and 2nd round loser, already in order
 
         // 20-21 are 3rd round loser, move up 2
-        moveGame(slots, 22, 20)
-        moveGame(slots, 23, 21)
+        moveGame(slots, 22, 20);
+        moveGame(slots, 23, 21);
 
         // 22-23 are 3rd round winner, already in order
         
         // 24-25 are 4th round loser, already in order
 
         // 26-28 are playoffs for 7th-8th and 5th-6th, then 4th
-        moveGame(slots, 32, 26) // LM
-        moveGame(slots, 31, 27) // LN
-        moveGame(slots, 27, 28) // LO
+        moveGame(slots, 32, 26); // LM
+        moveGame(slots, 31, 27); // LN
+        moveGame(slots, 27, 28); // LO
 
-        // WO
+        // finally, move Danny's 1:30 game to 4:00
+        moveGame(slots, 9, 15);
+        moveGame(slots, 13, 14);
 
         tournament.timeSlots = slots;
         const db = getFirestore();
-        const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
+        const result = await setDoc(doc(db, "tournaments", tournamentId), tournament);
         console.log('added timeSlots with setDoc:');
         console.log(result);
 
@@ -219,7 +229,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
         tournament.participantMap = participantMap;
         const db = getFirestore();
-        const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
+        const result = await setDoc(doc(db, "tournaments", tournamentId), tournament);
         console.log('added participantMap with setDoc:');
         console.log(result);
       });
@@ -235,7 +245,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const [game] = vm.getGames(true);
         const winnerId = Math.random() >= 0.5 ? game.participantA.id : game.participantB.id;
         vm.declareWinner(game.gameId, winnerId as number);
-        const result = await setDoc(doc(db, "tournaments", "mine"), vm.tournament);
+        const result = await setDoc(doc(db, "tournaments", tournamentId), vm.tournament);
         console.log(`set winner to ${winnerId}:`, game);
         console.log(result);
         this.cd.markForCheck();
@@ -259,7 +269,7 @@ export class AppComponent implements OnInit, OnDestroy {
         tournament.resultMap = {};
         tournament.gameResultMap = {};
 
-        const result = await setDoc(doc(db, "tournaments", "mine"), tournament);
+        const result = await setDoc(doc(db, "tournaments", tournamentId), tournament);
         console.log('resetGames()', result);
       })
     });
